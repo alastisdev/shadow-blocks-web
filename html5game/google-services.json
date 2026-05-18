@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "110929702156",
+    "project_id": "alastisdev-shadow-blocks",
+    "storage_bucket": "alastisdev-shadow-blocks.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:110929702156:android:0ca26302f2737d23132d29",
+        "android_client_info": {
+          "package_name": "com.wdstudio.shadowblocks"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAxaIOFrI94-DVZ1Rk36zVTNyWZjY1q7HY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

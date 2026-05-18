@@ -1,0 +1,18 @@
+{
+  "en": {
+    "menu_start": "START PLAY",
+    "menu_options": "OPTIONS",
+    "menu_support": "SUPPORT",
+    "menu_exit": "EXIT",
+    "opt_brightness": "BRIGHTNESS: ",
+    "opt_language": "LANGUAGE: EN"
+  },
+  "pl": {
+    "menu_start": "GRAJ",
+    "menu_options": "USTAWIENIA",
+    "menu_support": "WSPARCIE",
+    "menu_exit": "WYJŚĆIE",
+    "opt_brightness": "JASNOŚĆ: ",
+    "opt_language": "JĘZYK: PL"
+  }
+}
