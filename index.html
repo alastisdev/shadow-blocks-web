@@ -175,7 +175,7 @@
         <script>window.onload = GameMaker_Init;</script>
 
         <!-- ===== FEEDBACK SYSTEM ===== -->
-        <button id="fbOpenBtn" onclick="document.getElementById('fbModal').style.display='flex'">
+        <button id="fbOpenBtn" onclick="fbOpen()">
             💬 Feedback
         </button>
 
@@ -212,6 +212,34 @@
         </div>
 
         <script>
+            var fbCanvas = document.getElementById('canvas');
+
+            // Otwarcie modala - zablokuj input gry
+            function fbOpen() {
+                document.getElementById('fbModal').style.display = 'flex';
+                if (fbCanvas) fbCanvas.style.pointerEvents = 'none';
+                // Odbierz focus canvasowi GameMaker (przestaje lapac klawiature)
+                if (fbCanvas && fbCanvas.blur) fbCanvas.blur();
+            }
+
+            // Zamkniecie modala - przywroc input gry
+            function fbClose() {
+                document.getElementById('fbModal').style.display = 'none';
+                if (fbCanvas) fbCanvas.style.pointerEvents = 'auto';
+            }
+
+            // Podmien onclick przycisku zamykania (X)
+            document.querySelector('.fb-close').onclick = fbClose;
+
+            // Zatrzymaj propagacje eventow z modala do canvas GameMaker
+            var fbBox = document.querySelector('.fb-box');
+            ['keydown','keyup','keypress','pointerdown','pointerup','mousedown','mouseup','touchstart','touchend'].forEach(function(evt) {
+                fbBox.addEventListener(evt, function(e) {
+                    e.stopPropagation();
+                }, true);
+            });
+
+            // Submit
             document.getElementById('fbForm').addEventListener('submit', function(e) {
                 e.preventDefault();
                 var form = e.target;
@@ -225,9 +253,7 @@
                     if (response.ok) {
                         form.style.display = 'none';
                         document.getElementById('fbThanks').style.display = 'block';
-                        setTimeout(function() {
-                            document.getElementById('fbModal').style.display = 'none';
-                        }, 2500);
+                        setTimeout(fbClose, 2500);
                     } else {
                         alert('Oops! Something went wrong. Please try again.');
                     }
@@ -238,7 +264,7 @@
 
             // Zamknij modal klikajac w tlo
             document.getElementById('fbModal').addEventListener('click', function(e) {
-                if (e.target === this) this.style.display = 'none';
+                if (e.target === this) fbClose();
             });
         </script>
         <!-- ===== END FEEDBACK ===== -->
