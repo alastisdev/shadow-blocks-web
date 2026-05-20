@@ -44,6 +44,97 @@
                 touch-action: none;
                 display: block;
             }
+
+            /* ===== FEEDBACK SYSTEM ===== */
+            /* FLOATING BUTTON */
+            #fbOpenBtn {
+                position: fixed; bottom: 20px; right: 20px;
+                z-index: 9998;
+                background: #00d4ff; color: #000;
+                font-family: sans-serif; font-size: 14px; font-weight: 700;
+                letter-spacing: 1px;
+                padding: 12px 20px; border: 2px solid #000;
+                border-radius: 8px; cursor: pointer;
+                box-shadow: 0 4px 16px rgba(0,212,255,0.4);
+                transition: transform 0.2s;
+            }
+            #fbOpenBtn:hover { transform: scale(1.06); background: #4de8ff; }
+
+            /* MODAL OVERLAY */
+            .fb-modal {
+                display: none;
+                position: fixed; inset: 0;
+                background: rgba(0,0,0,0.85);
+                z-index: 9999;
+                align-items: center; justify-content: center;
+                padding: 20px;
+            }
+            .fb-box {
+                background: #14141c; color: #fff;
+                border: 2px solid #00d4ff;
+                border-radius: 12px;
+                padding: 28px; max-width: 420px; width: 100%;
+                position: relative;
+                font-family: sans-serif;
+                box-shadow: 0 8px 40px rgba(0,212,255,0.3);
+                box-sizing: border-box;
+            }
+            .fb-box h2 { margin: 0 0 8px; font-size: 22px; color: #00d4ff; }
+            .fb-box p { margin: 0 0 20px; font-size: 14px; color: #aaa; line-height: 1.4; }
+            .fb-close {
+                position: absolute; top: 12px; right: 16px;
+                background: none; border: none; color: #888;
+                font-size: 28px; cursor: pointer; line-height: 1;
+            }
+            .fb-close:hover { color: #fff; }
+
+            /* RATING STARS */
+            .fb-rating { margin-bottom: 16px; }
+            .fb-rating > span { display: block; font-size: 13px; color: #aaa; margin-bottom: 6px; }
+            .fb-stars {
+                display: inline-flex; flex-direction: row-reverse;
+                gap: 4px;
+            }
+            .fb-stars input { display: none; }
+            .fb-stars label {
+                font-size: 32px; color: #444; cursor: pointer;
+                transition: color 0.15s;
+            }
+            .fb-stars label:hover,
+            .fb-stars label:hover ~ label,
+            .fb-stars input:checked ~ label { color: #ffd24a; }
+
+            /* INPUTS */
+            .fb-box textarea, .fb-box input[type="email"] {
+                width: 100%; box-sizing: border-box;
+                background: #0c0c12; color: #fff;
+                border: 1px solid #333; border-radius: 6px;
+                padding: 12px; margin-bottom: 12px;
+                font-family: sans-serif; font-size: 14px;
+                resize: vertical;
+            }
+            .fb-box textarea:focus, .fb-box input:focus {
+                outline: none; border-color: #00d4ff;
+            }
+            .fb-submit {
+                width: 100%; background: #00d4ff; color: #000;
+                border: none; border-radius: 6px;
+                padding: 14px; font-size: 15px; font-weight: 700;
+                cursor: pointer; letter-spacing: 1px;
+                transition: background 0.2s;
+            }
+            .fb-submit:hover { background: #4de8ff; }
+
+            .fb-thanks {
+                display: none; text-align: center;
+                padding: 20px; font-size: 16px; color: #00d4ff;
+            }
+
+            @media (max-width: 480px) {
+                #fbOpenBtn { bottom: 12px; right: 12px; padding: 10px 16px; font-size: 12px; }
+                .fb-box { padding: 20px; }
+            }
+            /* ===== END FEEDBACK ===== */
         </style>
 
         <!-- Canvas auto-scale -->
@@ -82,5 +173,74 @@
 
         <script type="text/javascript" src="html5game/Shadow_Blocks.js"></script>
         <script>window.onload = GameMaker_Init;</script>
+
+        <!-- ===== FEEDBACK SYSTEM ===== -->
+        <button id="fbOpenBtn" onclick="document.getElementById('fbModal').style.display='flex'">
+            💬 Feedback
+        </button>
+
+        <div id="fbModal" class="fb-modal">
+            <div class="fb-box">
+                <button class="fb-close" onclick="document.getElementById('fbModal').style.display='none'">×</button>
+                <h2>Got feedback?</h2>
+                <p>Found a bug? Love it? Hate it? Tell me — I read everything.</p>
+
+                <form action="https://formspree.io/f/mvzyzlby" method="POST" id="fbForm">
+                    <div class="fb-rating">
+                        <span>How was it?</span>
+                        <div class="fb-stars">
+                            <input type="radio" name="rating" value="5" id="s5"><label for="s5">★</label>
+                            <input type="radio" name="rating" value="4" id="s4"><label for="s4">★</label>
+                            <input type="radio" name="rating" value="3" id="s3"><label for="s3">★</label>
+                            <input type="radio" name="rating" value="2" id="s2"><label for="s2">★</label>
+                            <input type="radio" name="rating" value="1" id="s1"><label for="s1">★</label>
+                        </div>
+                    </div>
+
+                    <textarea name="message" placeholder="Your thoughts..." required rows="4"></textarea>
+                    <input type="email" name="email" placeholder="Email (optional - if you want a reply)">
+                    <input type="hidden" name="game" value="Shadow Blocks Web">
+                    <input type="text" name="_gotcha" style="display:none">
+
+                    <button type="submit" class="fb-submit">Send Feedback</button>
+                </form>
+
+                <div id="fbThanks" class="fb-thanks">
+                    🙏 Thank you! Your feedback means a lot.
+                </div>
+            </div>
+        </div>
+
+        <script>
+            document.getElementById('fbForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                var form = e.target;
+                var data = new FormData(form);
+
+                fetch(form.action, {
+                    method: 'POST',
+                    body: data,
+                    headers: { 'Accept': 'application/json' }
+                }).then(function(response) {
+                    if (response.ok) {
+                        form.style.display = 'none';
+                        document.getElementById('fbThanks').style.display = 'block';
+                        setTimeout(function() {
+                            document.getElementById('fbModal').style.display = 'none';
+                        }, 2500);
+                    } else {
+                        alert('Oops! Something went wrong. Please try again.');
+                    }
+                }).catch(function() {
+                    alert('Network error. Please try again.');
+                });
+            });
+
+            // Zamknij modal klikajac w tlo
+            document.getElementById('fbModal').addEventListener('click', function(e) {
+                if (e.target === this) this.style.display = 'none';
+            });
+        </script>
+        <!-- ===== END FEEDBACK ===== -->
     </body>
 </html>
